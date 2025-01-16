@@ -5,24 +5,47 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Recommender.AI</title>
   <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
   <header>
-    <h1>Recommender.AI</h1>
-    <p>Your personalized product recommender powered by AI.</p>
+    <nav>
+      <h1>Recommender<span>.AI</span></h1>
+      <ul>
+        <li><a href="#upload-section">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
   </header>
+
   <main>
-    <section id="upload-section">
-      <h2>Upload Your Image</h2>
-      <input type="file" id="image-upload" accept="image/*">
-      <button id="analyze-btn">Analyze</button>
+    <section id="hero">
+      <div class="hero-content">
+        <h2>Revolutionize Your Shopping Experience</h2>
+        <p>AI-powered personalized product recommendations tailored to your unique needs.</p>
+        <a href="#upload-section" class="btn">Get Started</a>
+      </div>
     </section>
-    <section id="results-section" hidden>
+
+    <section id="upload-section" class="content-section">
+      <h2>Upload Your Image</h2>
+      <p>Let our AI analyze your features and recommend the best products for you.</p>
+      <input type="file" id="image-upload" accept="image/*">
+      <button id="analyze-btn" class="btn">Analyze</button>
+    </section>
+
+    <section id="results-section" class="content-section" hidden>
       <h2>Recommended Products</h2>
-      <div id="product-list"></div>
-      <button id="reset-btn">Reset</button>
+      <div id="product-list" class="product-grid"></div>
+      <button id="reset-btn" class="btn secondary">Reset</button>
     </section>
   </main>
+
+  <footer>
+    <p>&copy; 2025 Recommender.AI. All rights reserved.</p>
+  </footer>
+
   <script src="script.js"></script>
 </body>
 </html>
