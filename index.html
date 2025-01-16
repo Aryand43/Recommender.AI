@@ -29,7 +29,7 @@
   </header>
 
   <!-- Hero Section -->
-  <section id="hero">
+  <section id="hero" style="background: url('assets/hero-bg.jpg') center/cover no-repeat;">
     <div class="hero-content">
       <h2>Revolutionize Your Shopping Experience</h2>
       <p>AI-powered personalized product recommendations tailored to your unique needs.</p>
@@ -65,6 +65,9 @@
     <h2>Try It Now</h2>
     <p>Let our AI analyze your features and recommend the best products for you.</p>
     <input type="file" id="image-upload" accept="image/*">
+    <div id="progress-bar-container">
+      <div id="progress-bar"></div>
+    </div>
     <button id="analyze-btn" class="btn">Analyze</button>
     <section id="results-section" hidden>
       <h2>Recommended Products</h2>
@@ -84,6 +87,19 @@
         <textarea id="message" placeholder="Your Message" rows="5" required></textarea>
         <button type="submit" class="btn">Send Message</button>
       </form>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section id="faq" class="content-section">
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq-item">
+      <h3>How does BestMatch.AI work?</h3>
+      <p>BestMatch.AI uses advanced AI to analyze your facial features and provide tailored product recommendations.</p>
+    </div>
+    <div class="faq-item">
+      <h3>Is my data secure?</h3>
+      <p>Yes, all data processing is done on-device, and we do not store any personal data.</p>
     </div>
   </section>
 
