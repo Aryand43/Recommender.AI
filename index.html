@@ -4,12 +4,21 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Recommender.AI</title>
+
+  <!-- Link to External CSS -->
   <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  
+  <!-- Google Fonts with Fallback -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" onerror="this.href='fallback-font.css';">
+  
+  <!-- Prefetch Resources for Faster Loading -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="style.css">
+  <link rel="preload" as="script" href="script.js">
 </head>
 <body>
   <header>
-    <nav>
+    <nav aria-label="Main Navigation">
       <h1>Recommender<span>.AI</span></h1>
       <ul>
         <li><a href="#upload-section">Home</a></li>
@@ -46,6 +55,7 @@
     <p>&copy; 2025 Recommender.AI. All rights reserved.</p>
   </footer>
 
-  <script src="script.js"></script>
+  <!-- Asynchronous Loading for JS -->
+  <script src="script.js" defer></script>
 </body>
 </html>
