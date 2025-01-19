@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,6 +16,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/blazeface"></script>
 </head>
+
 <body>
   <header>
     <nav aria-label="Main Navigation">
@@ -58,7 +60,7 @@
         <p>Privacy-focused, no data is stored.</p>
       </div>
     </div>
-  </section>  
+  </section>
 
   <!-- Try It Section -->
   <section id="upload-section" class="content-section">
@@ -67,6 +69,13 @@
     <input type="file" id="image-upload" accept="image/*">
     <div id="progress-bar-container">
       <div id="progress-bar"></div>
+    </div>
+    <div class="api-toggle">
+      <label class="switch">
+        <input type="checkbox" id="api-toggle">
+        <span class="slider round"></span>
+      </label>
+      <span class="toggle-label">Using Local API</span>
     </div>
     <button id="analyze-btn" class="btn">Analyze</button>
     <section id="results-section" hidden>
@@ -111,4 +120,5 @@
   <!-- External JS -->
   <script src="script.js" defer></script>
 </body>
+
 </html>

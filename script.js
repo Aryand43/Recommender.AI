@@ -7,19 +7,24 @@ const productList = document.getElementById('product-list');
 const imagePreviewContainer = document.createElement('div');
 imagePreviewContainer.id = 'image-preview-container';
 imageUpload.parentNode.insertBefore(imagePreviewContainer, imageUpload.nextSibling);
+const apiToggle = document.getElementById('api-toggle');
+const toggleLabel = document.querySelector('.toggle-label');
 
-// Load the AI Model
-let faceModel;
-async function loadModel() {
-  faceModel = await blazeface.load();
-  console.log('AI Model Loaded Successfully');
-}
-loadModel();
+//// Load the AI Model
+//let faceModel;
+//async function loadModel() {
+//  faceModel = await blazeface.load();
+//  console.log('AI Model Loaded Successfully');
+//}
+//loadModel();
 
 // Event Listeners
 analyzeBtn.addEventListener('click', handleAnalyze);
 resetBtn.addEventListener('click', resetApp);
 imageUpload.addEventListener('change', handleImagePreview);
+apiToggle.addEventListener('change', function() {
+  toggleLabel.textContent = this.checked ? 'Using Production API' : 'Using Local API';
+});
 
 function handleImagePreview(event) {
   const file = event.target.files[0];
@@ -54,12 +59,15 @@ async function handleAnalyze() {
   showLoadingIndicator();
 
   try {
-    // Create form data to send to backend
     const formData = new FormData();
     formData.append('file', file);
 
-    // Make API request to backend
-    const response = await fetch('http://localhost:8000/analyze', {
+    // Determine which API URL to use based on toggle state
+    const apiUrl = apiToggle.checked
+      ? 'https://face-analysis-backend.onrender.com/analyze'
+      : 'http://localhost:8000/analyze';
+
+    const response = await fetch(apiUrl, {
       method: 'POST',
       body: formData,
     });
@@ -135,21 +143,21 @@ function displayRecommendations(recommendations) {
   });
 }
 
-// Utility: Convert Uploaded Image to Tensor
-async function readImage(file) {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    const reader = new FileReader();
-
-    reader.onload = () => {
-      img.src = reader.result;
-      img.onload = () => resolve(tf.browser.fromPixels(img));
-    };
-
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
-}
+//// Utility: Convert Uploaded Image to Tensor
+//async function readImage(file) {
+//  return new Promise((resolve, reject) => {
+//    const img = new Image();
+//    const reader = new FileReader();
+//
+//    reader.onload = () => {
+//      img.src = reader.result;
+//      img.onload = () => resolve(tf.browser.fromPixels(img));
+//    };
+//
+//    reader.onerror = reject;
+//    reader.readAsDataURL(file);
+//  });
+//}
 
 // Reset Application
 function resetApp() {
