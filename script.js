@@ -114,14 +114,17 @@ function displayRecommendations(recommendations) {
     if (index !== 0) productsGrid.classList.add('collapsed');
 
     category.products.forEach(product => {
-      const productCard = document.createElement('div');
-      productCard.classList.add('product-card');
+      const productLink = document.createElement('a');
+      productLink.href = product.product_url;
+      productLink.target = '_blank';
+      productLink.rel = 'noopener noreferrer';
+      productLink.classList.add('product-card');
 
       let priceDisplay = product.price ? `$${product.price.toFixed(2)}` : 'Price not available';
       let ratingDisplay = product.rating ? `${product.rating.toFixed(1)}/5` : 'No rating';
       let reviewsDisplay = product.reviews_count ? `(${product.reviews_count} reviews)` : '';
 
-      productCard.innerHTML = `
+      productLink.innerHTML = `
         <div class="product-image-container">
           ${product.image_url
           ? `<img src="${product.image_url}" alt="${product.title}" loading="lazy">`
@@ -133,17 +136,29 @@ function displayRecommendations(recommendations) {
             <p class="price">${priceDisplay}</p>
             <p class="rating">${ratingDisplay} ${reviewsDisplay}</p>
           </div>
-          <a href="${product.product_url}" target="_blank" class="btn product-btn">View on Amazon</a>
         </div>
       `;
 
-      productsGrid.appendChild(productCard);
+      productsGrid.appendChild(productLink);
     });
 
-    // Add click handler for collapsible sections
-    categoryTitle.addEventListener('click', () => {
+    // Smooth section toggle with animation
+    categoryTitle.addEventListener('click', (e) => {
+      e.preventDefault();
+
+      // Toggle the collapsed state
       categoryTitle.classList.toggle('collapsed');
-      productsGrid.classList.toggle('collapsed');
+
+      // Animate the grid
+      if (productsGrid.classList.contains('collapsed')) {
+        productsGrid.classList.remove('collapsed');
+        // Ensure focus is visible
+        setTimeout(() => {
+          productsGrid.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 100);
+      } else {
+        productsGrid.classList.add('collapsed');
+      }
     });
 
     categorySection.appendChild(productsGrid);
