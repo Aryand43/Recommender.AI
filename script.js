@@ -4,31 +4,9 @@ const analyzeBtn = document.getElementById('analyze-btn');
 const resetBtn = document.getElementById('reset-btn');
 const resultsSection = document.getElementById('results-section');
 const productList = document.getElementById('product-list');
-
-// Mock Product Dataset
-const mockProducts = [
-  { name: 'CeraVe Moisturizing Cream', link: 'https://www.amazon.com/dp/B000YJ2SLG', category: 'Skincare' },
-  { name: 'La Roche-Posay Gentle Cleanser', link: 'https://www.amazon.com/dp/B01MSSDEPK', category: 'Skincare' },
-  { name: 'Dyson Supersonic Hair Dryer', link: 'https://www.amazon.com/dp/B01N5IV1H8', category: 'Miscellaneous' },
-  { name: 'Maybelline Matte Ink', link: 'https://www.amazon.com/dp/B071YS2JXZ', category: 'Cosmetics' },
-  { name: 'Rael Hydrocolloid Pimple Healing Patch', link: 'https://www.amazon.com/Rael-Hydrocolloid-Pimple-Healing-Patch/dp/B07G1VKCND', category: 'Skincare' },
-  { name: 'COSRX Snail Mucin Peptide Booster', link: 'https://www.amazon.com/COSRX-Snail-Mucin-Peptide-Booster/dp/B0D663VWFC', category: 'Skincare' },
-  { name: 'Paula’s Choice Skin Perfecting 2% BHA Liquid Exfoliant', link: 'https://www.amazon.com/Paulas-Choice-SKIN-PERFECTING-Exfoliant-Facial-Blackheads/dp/B00949CTQQ', category: 'Skincare' },
-  { name: 'Korean Skin Solution Sunscreen (SPF 50)', link: 'https://www.amazon.com/Korean-Skin-Solution-Types-S-P-F50/dp/B0DG26H4YY', category: 'Skincare' },
-  { name: 'Bio-Oil Skincare Oil (200ml)', link: 'https://www.amazon.com/Bio-Oil-200ml-Multiuse-Skincare-6-7oz/dp/B00AREGVUM', category: 'Skincare' },
-  { name: 'Niacinamide + Tranexamic Acid Serum', link: 'https://www.amazon.com/Niacinamide-Tranexamic-Hyaluronic-Sensitive-Fragrance-Free/dp/B0CLLV2T1P', category: 'Skincare' },
-  { name: 'Paula’s Choice C15 Super Booster', link: 'https://www.amazon.com/Paulas-Choice-Booster-Vitamin-Brightening/dp/B00EYVSOKY', category: 'Skincare' },
-  { name: 'e.l.f. Hydrated Ever After Skincare Set', link: 'https://www.amazon.com/l-f-Hydrated-Skincare-Hydration-Cleanser/dp/B08T7DSZYD', category: 'Skincare' },
-  { name: 'LAPCOS Cucumber Sheet Mask', link: 'https://www.amazon.com/LAPCOS-Cucumber-Moisturize-Korean-Favorite/dp/B07JMTMHGS', category: 'Skincare' },
-  { name: 'TIRTIR Niacinamide Moisturizing Serum', link: 'https://www.amazon.com/TIRTIR-Moisturizing-Niacinamide-Paraben-Free-Nature-Oriented/dp/B0CG1H8YRS', category: 'Skincare' },
-  { name: 'Clean Skin Club Disposable Towels', link: 'https://www.amazon.com/Clean-Skin-Club-Disposable-Sensitive/dp/B07PBXXNCY', category: 'Skincare' },
-  { name: 'Tower 28 SOS Daily Rescue Facial Spray', link: 'https://www.amazon.com/Tower-28-Beauty-Rescue-Facial/dp/B0B3SCM1L6', category: 'Skincare' },
-  { name: 'BYOMA Hydrating Serum', link: 'https://www.amazon.com/BYOMA-Hydrating-Serum-Moisturizing-Ceramides/dp/B0C7C88ZSK', category: 'Skincare' },
-  { name: 'Glow Recipe Watermelon Glow Niacinamide Dew Drops', link: 'https://www.amazon.com/Glow-Recipe-Watermelon-Niacinamide-Drops/dp/B0BL2BB4GV', category: 'Skincare' },
-  { name: 'Medicube Zero Pore Pads', link: 'https://www.amazon.com/Medicube-Zero-Pore-Pads-Dual-Textured/dp/B09V7Z4TJG', category: 'Skincare' },
-  { name: 'Youth to the People Kale + Green Tea Superfood Cleanser', link: 'https://www.amazon.com/Youth-People-Kale-Superfood-Cleanser/dp/B018A0BO92', category: 'Skincare' }
-];
-
+const imagePreviewContainer = document.createElement('div');
+imagePreviewContainer.id = 'image-preview-container';
+imageUpload.parentNode.insertBefore(imagePreviewContainer, imageUpload.nextSibling);
 
 // Load the AI Model
 let faceModel;
@@ -41,6 +19,28 @@ loadModel();
 // Event Listeners
 analyzeBtn.addEventListener('click', handleAnalyze);
 resetBtn.addEventListener('click', resetApp);
+imageUpload.addEventListener('change', handleImagePreview);
+
+function handleImagePreview(event) {
+  const file = event.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      imagePreviewContainer.innerHTML = `
+        <div class="image-preview">
+          <img src="${e.target.result}" alt="Preview">
+          <button class="remove-preview" onclick="removePreview()">×</button>
+        </div>
+      `;
+    }
+    reader.readAsDataURL(file);
+  }
+}
+
+function removePreview() {
+  imagePreviewContainer.innerHTML = '';
+  imageUpload.value = '';
+}
 
 // Handle Image Analysis
 async function handleAnalyze() {
@@ -54,17 +54,30 @@ async function handleAnalyze() {
   showLoadingIndicator();
 
   try {
-    const image = await readImage(file);
-    const predictions = await faceModel.estimateFaces(image, false);
+    // Create form data to send to backend
+    const formData = new FormData();
+    formData.append('file', file);
+
+    // Make API request to backend
+    const response = await fetch('http://localhost:8000/analyze', {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
 
     hideLoadingIndicator();
 
-    if (predictions.length > 0) {
-      console.log('Face detected:', predictions);
-      displayRecommendations('Skincare'); // Recommend Skincare
+    if (data.analysis && data.recommendations) {
+      console.log('Analysis results:', data);
+      displayRecommendations(data.recommendations);
     } else {
-      console.log('No face detected');
-      displayRecommendations('Miscellaneous'); // Recommend Miscellaneous
+      console.log('No analysis results');
+      alert('No analysis results found. Please try again with a different image.');
     }
   } catch (error) {
     hideLoadingIndicator();
@@ -74,20 +87,51 @@ async function handleAnalyze() {
 }
 
 // Display Recommendations
-function displayRecommendations(category) {
+function displayRecommendations(recommendations) {
   resultsSection.hidden = false;
-
   productList.innerHTML = '';
-  const recommendedProducts = mockProducts.filter(product => product.category === category);
 
-  recommendedProducts.forEach(product => {
-    const productCard = document.createElement('div');
-    productCard.classList.add('product-card');
-    productCard.innerHTML = `
-      <h3>${product.name}</h3>
-      <a href="${product.link}" target="_blank" class="btn">Buy Now</a>
-    `;
-    productList.appendChild(productCard);
+  recommendations.forEach(category => {
+    const categorySection = document.createElement('div');
+    categorySection.classList.add('category-section');
+
+    const categoryTitle = document.createElement('h2');
+    categoryTitle.textContent = category.category;
+    categoryTitle.classList.add('category-title');
+    categorySection.appendChild(categoryTitle);
+
+    const productsGrid = document.createElement('div');
+    productsGrid.classList.add('products-grid');
+
+    category.products.forEach(product => {
+      const productCard = document.createElement('div');
+      productCard.classList.add('product-card');
+
+      let priceDisplay = product.price ? `$${product.price.toFixed(2)}` : 'Price not available';
+      let ratingDisplay = product.rating ? `${product.rating.toFixed(1)}/5` : 'No rating';
+      let reviewsDisplay = product.reviews_count ? `(${product.reviews_count} reviews)` : '';
+
+      productCard.innerHTML = `
+        <div class="product-image-container">
+          ${product.image_url
+          ? `<img src="${product.image_url}" alt="${product.title}" loading="lazy">`
+          : '<div class="no-image">No Image Available</div>'}
+        </div>
+        <div class="product-info">
+          <h3 class="product-title">${product.title}</h3>
+          <div class="product-details">
+            <p class="price">${priceDisplay}</p>
+            <p class="rating">${ratingDisplay} ${reviewsDisplay}</p>
+          </div>
+          <a href="${product.product_url}" target="_blank" class="btn product-btn">View on Amazon</a>
+        </div>
+      `;
+
+      productsGrid.appendChild(productCard);
+    });
+
+    categorySection.appendChild(productsGrid);
+    productList.appendChild(categorySection);
   });
 }
 
