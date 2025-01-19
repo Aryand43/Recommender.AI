@@ -99,17 +99,19 @@ function displayRecommendations(recommendations) {
   resultsSection.hidden = false;
   productList.innerHTML = '';
 
-  recommendations.forEach(category => {
+  recommendations.forEach((category, index) => {
     const categorySection = document.createElement('div');
     categorySection.classList.add('category-section');
 
     const categoryTitle = document.createElement('h2');
     categoryTitle.textContent = category.category;
     categoryTitle.classList.add('category-title');
+    if (index !== 0) categoryTitle.classList.add('collapsed');
     categorySection.appendChild(categoryTitle);
 
     const productsGrid = document.createElement('div');
     productsGrid.classList.add('products-grid');
+    if (index !== 0) productsGrid.classList.add('collapsed');
 
     category.products.forEach(product => {
       const productCard = document.createElement('div');
@@ -136,6 +138,12 @@ function displayRecommendations(recommendations) {
       `;
 
       productsGrid.appendChild(productCard);
+    });
+
+    // Add click handler for collapsible sections
+    categoryTitle.addEventListener('click', () => {
+      categoryTitle.classList.toggle('collapsed');
+      productsGrid.classList.toggle('collapsed');
     });
 
     categorySection.appendChild(productsGrid);
