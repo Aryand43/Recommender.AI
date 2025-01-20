@@ -56,6 +56,7 @@ async function handleAnalyze() {
     return;
   }
 
+  resetApp();
   showLoadingIndicator();
 
   try {
